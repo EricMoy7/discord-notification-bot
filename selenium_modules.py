@@ -2,8 +2,10 @@ from selenium.webdriver.common.by import By
 
 
 def get_table_data(driver, table_xpath):
-    """Parameters - driver (object: selenium driver), table_xpath (string: xpath to table
+    """
+    Parameters - driver (object: selenium driver), table_xpath (string: xpath to table
     on webpage)
+
     Returns table in a double string list format
     """
 
@@ -22,5 +24,4 @@ def get_table_data(driver, table_xpath):
         if (new_row):
             new_table.append(new_row)
 
-    print(new_table)
-    return
+    return new_table

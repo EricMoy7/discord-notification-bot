@@ -32,10 +32,11 @@ async def test():
     WebDriverWait(driver, 10).until(
         EC.invisibility_of_element_located((By.CLASS_NAME, 'progress')))
 
-    get_table_data(
+    table_data = get_table_data(
         driver, f"/html/body/div/div[2]/div[1]/div[1]/div/div/table")
-    # channel = client.get_channel(900841296346886144)
-    # await channel.send(file=jewel_table)
+
+    channel = client.get_channel(900841296346886144)
+    await channel.send(embed=embed)
     driver.close()
 
 
