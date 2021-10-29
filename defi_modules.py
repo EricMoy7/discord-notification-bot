@@ -39,8 +39,7 @@ def pool_template(table_data):
         first_col_heading=False
     )
 
-    return(first_section, second_section)
-
+    return(first_section + "\n" + second_section)
 
 # jewels_template([["Pending Unlocked Jewels", "something", "something"],
 #                 ["something", "something", "something"]])
