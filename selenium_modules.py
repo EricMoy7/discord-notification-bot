@@ -1,4 +1,7 @@
 from selenium.webdriver.common.by import By
+import json
+import base64
+from PIL import Image
 
 
 def get_table_data(driver, table_xpath):
@@ -37,3 +40,35 @@ def get_table_from_name(driver, name):
     header_parent = header_name.find_element(By.XPATH, "./..")
 
     return(get_table_data(driver, header_parent))
+
+
+def chrome_takeFullScreenshot(driver):
+    """
+    From https://stackoverflow.com/questions/45199076/take-full-page-screenshot-in-chrome-with-selenium
+    """
+
+    def send(cmd, params):
+        resource = "/session/%s/chromium/send_command_and_get_result" % driver.session_id
+        url = driver.command_executor._url + resource
+        body = json.dumps({'cmd': cmd, 'params': params})
+        response = driver.command_executor._request('POST', url, body)
+        return response.get('value')
+
+    def evaluate(script):
+        response = send('Runtime.evaluate', {
+                        'returnByValue': True, 'expression': script})
+        return response['result']['value']
+
+    metrics = evaluate(
+        "({" +
+        "width: Math.max(window.innerWidth, document.body.scrollWidth, document.documentElement.scrollWidth)|0," +
+        "height: Math.max(innerHeight, document.body.scrollHeight, document.documentElement.scrollHeight)|0," +
+        "deviceScaleFactor: window.devicePixelRatio || 1," +
+        "mobile: typeof window.orientation !== 'undefined'" +
+        "})")
+    send('Emulation.setDeviceMetricsOverride', metrics)
+    screenshot = send('Page.captureScreenshot', {
+                      'format': 'png', 'fromSurface': True})
+    send('Emulation.clearDeviceMetricsOverride', {})
+
+    return base64.b64decode(screenshot['data'])
