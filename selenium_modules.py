@@ -10,8 +10,12 @@ def get_table_data(driver, table_xpath):
     """
 
     # Finds all rows in the table to iterate through
-    table = driver.find_element(
-        By.XPATH, table_xpath)
+    if isinstance(table_xpath, str):
+        table = driver.find_element(
+            By.XPATH, table_xpath)
+    else:
+        table = table_xpath
+
     table_rows = table.find_elements(By.TAG_NAME, "tr")
 
     # Initializes final table
@@ -25,3 +29,11 @@ def get_table_data(driver, table_xpath):
             new_table.append(new_row)
 
     return new_table
+
+
+def get_table_from_name(driver, name):
+    header_name = driver.find_element(
+        By.XPATH, f"//*[contains(text(), '{name}')]")
+    header_parent = header_name.find_element(By.XPATH, "./..")
+
+    return(get_table_data(driver, header_parent))

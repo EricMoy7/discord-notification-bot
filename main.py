@@ -12,8 +12,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from selenium_modules import get_table_data
-from defi_modules import jewels_template
+from selenium_modules import get_table_data, get_table_from_name
+from defi_modules import jewels_template, pool_template
 import json
 import base64
 
@@ -83,6 +83,8 @@ async def test():
     table_data = get_table_data(
         driver, f"/html/body/div/div[2]/div[1]/div[1]/div/div/table")
 
+    jewel_one_table = get_table_from_name(driver, "JEWEL / WONE")
+
     png = chrome_takeFullScreenshot(driver)
 
     screenshot_name = "jewelInfo.png"
@@ -93,9 +95,10 @@ async def test():
     driver.close()
 
     total_jewel_msg = jewels_template(table_data)
+    jewel_one = pool_template(jewel_one_table)
 
     channel = client.get_channel(900841296346886144)
-    await channel.send(f"```{total_jewel_msg}```")
+    await channel.send(f"```{total_jewel_msg} \n {jewel_one[0]} \n {jewel_one[1]}```")
     channel2 = client.get_channel(903409838401417216)
     await channel2.send(file=discord.File(screenshot_name))
 
